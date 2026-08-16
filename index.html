@@ -11,16 +11,16 @@
     .bookmark-btn { display: inline-block; background-color: #238636; color: #ffffff; padding: 14px 24px; font-size: 1rem; font-weight: bold; text-decoration: none; border-radius: 8px; margin-bottom: 20px; box-shadow: 0 4px 12px rgba(35, 134, 54, 0.4); cursor: move; }
     .copy-btn { background-color: #1f6beb; color: #ffffff; border: none; padding: 10px 18px; font-size: 0.9rem; font-weight: bold; border-radius: 6px; cursor: pointer; margin-bottom: 20px; }
     .instructions { background-color: #0d1117; border: 1px dashed #30363d; border-radius: 8px; padding: 20px; text-align: left; }
-    .instructions h2 { font-size: 0.95rem; color: #58a6ff; margin-top: 0; margin-bottom: 12px; }
-    .instructions ol { margin: 0; padding-left: 20px; font-size: 0.85rem; line-height: 1.6; color: #8b949e; }
+    .instructions h2 { font-size: 0.95rem; color: #58a6ff; margin-top: 0; margin-bottom: 8px; }
+    .instructions ol, .instructions ul { margin: 0; padding-left: 20px; font-size: 0.85rem; line-height: 1.6; color: #8b949e; }
     .divider { border-top: 1px solid #30363d; margin: 15px 0; }
+    .badge { background-color: #388bfd26; color: #58a6ff; padding: 2px 6px; border-radius: 4px; font-size: 0.8rem; font-weight: bold; }
   </style>
 </head>
 <body>
   <div class="card">
     <h1>⚡ 希望 MOD 執行小工具</h1>
     
-    <!-- 極短極簡化超連結 -->
     <a class="bookmark-btn" href="javascript:import('https://jack1988520-pixel.github.io/SEAL/loader.js')">
       🚀 啟動希望 MOD (拖我到書籤列)
     </a>
@@ -30,15 +30,25 @@
     </div>
 
     <div class="instructions">
-      <h2>📌 手機 Chrome 使用 SOP：</h2>
+      <h2>📌 手機端安裝 SOP：</h2>
       <ol>
         <li>先將任意網頁加入書籤，名稱取為：<b>希望 MOD</b>。</li>
-        <li>點擊上方<b>「複製外掛代碼」</b>，去編輯該書籤把網址替換掉。</li>
-        <div class="divider"></div>
-        <li><b>【重點】啟動方式：</b></li>
-        <li>進遊戲後，點擊頂部<b>「網址列」</b>，輸入 <b>希望</b>。</li>
-        <li>點擊下方出現 <b>⭐希望 MOD</b> 的搜尋結果即可啟動！</li>
+        <li>點擊上方<b>「複製外掛代碼」</b>，去編輯該書籤將網址替換掉。</li>
       </ol>
+
+      <div class="divider"></div>
+
+      <h2>🎮 啟動方式（依手機系統）：</h2>
+      
+      <p style="font-size: 0.85rem; font-weight: bold; color: #f0f6fc; margin: 8px 0 4px 0;">🤖 Android (Chrome)：</p>
+      <ul>
+        <li>進遊戲頁面 ➔ 點擊頂部<b>網址列</b> ➔ 輸入 <b>希望</b> ➔ 點選下方帶有 <b style="color: #f1e05a;">⭐</b> 圖示的書籤。</li>
+      </ul>
+
+      <p style="font-size: 0.85rem; font-weight: bold; color: #f0f6fc; margin: 12px 0 4px 0;">🍎 iOS (iPhone / Safari / Chrome)：</p>
+      <ul>
+        <li>進遊戲頁面 ➔ 開啟<b>書籤列表</b> ➔ 直接點擊 <b>希望 MOD</b> 即可啟動。</li>
+      </ul>
     </div>
   </div>
 
@@ -46,7 +56,7 @@
     function copyCode() {
       const code = document.querySelector('.bookmark-btn').getAttribute('href');
       navigator.clipboard.writeText(code).then(() => {
-        alert('✅ 極短代碼已複製！\n貼上時絕對不會再被 Chrome 吃掉了。');
+        alert('✅ 代碼已複製！\n請去編輯書籤，將網址替換掉。');
       }).catch(err => {
         alert('❌ 複製失敗: ' + err);
       });
