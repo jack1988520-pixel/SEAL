@@ -439,13 +439,39 @@
         header.style.cssText = `
             padding: 10px 12px; background: #2a221a; border-radius: 8px 8px 0 0;
             cursor: move; font-weight: bold; border-bottom: 1px solid #4a3f33;
-            flex-shrink: 0;
+            flex-shrink: 0; display: flex; justify-content: space-between; align-items: center;
         `;
+        const headerTitle = document.createElement('span');
+        headerTitle.textContent = '放置希望 改機面板';
+        header.textContent = '';
+        header.appendChild(headerTitle);
+
+        const collapseBtn = document.createElement('button');
+        const COLLAPSE_KEY = 'idle_seal_panel_collapsed';
+        let collapsed = false;
+        try { collapsed = !!GM_getValue(COLLAPSE_KEY, false); } catch (e) {}
+        collapseBtn.textContent = collapsed ? '▸' : '▾';
+        collapseBtn.title = '收合/展開';
+        collapseBtn.style.cssText = `
+            background: transparent; border: 1px solid #4a3f33; color: #eee;
+            width: 22px; height: 22px; line-height: 1; border-radius: 4px;
+            cursor: pointer; font-size: 12px; flex-shrink: 0;
+        `;
+        header.appendChild(collapseBtn);
         panel.appendChild(header);
 
         const body = document.createElement('div');
         body.style.cssText = 'padding: 12px; overflow-y: auto; flex: 1;';
+        if (collapsed) body.style.display = 'none';
         panel.appendChild(body);
+
+        collapseBtn.addEventListener('click', (ev) => {
+            ev.stopPropagation();
+            collapsed = !collapsed;
+            body.style.display = collapsed ? 'none' : '';
+            collapseBtn.textContent = collapsed ? '▸' : '▾';
+            try { GM_setValue(COLLAPSE_KEY, collapsed); } catch (e) {}
+        });
 
         const fields = [
             { key: 'moveSpeed', label: '移動速度倍率' },
