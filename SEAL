@@ -28,7 +28,7 @@
     }
 
     const TOGGLE_KEY = 'idle_seal_toggles_v1';
-    const TOGGLE_DEFAULTS = { skipEvolveMaterials: false, maxPetGrow: false, maxRefine: false };
+    const TOGGLE_DEFAULTS = { skipEvolveMaterials: false, maxRefine: false };
 
     function loadToggles() {
         try {
@@ -348,22 +348,6 @@
             };
         }
 
-        // 寵物強化等級(+N)直接拉滿：所有寵物更新(餵食長大/進化成功/進化
-        // 失敗掉階)都會經過 replacePet()，在這裡統一鎖定 grow=9 即可
-        if (typeof proto.replacePet === 'function') {
-            const origReplacePet = proto.replacePet;
-            proto.replacePet = function (e) {
-                try {
-                    if (toggles.maxPetGrow && e && typeof e.grow === 'number' && e.grow < 9) {
-                        e = Object.assign({}, e, { grow: 9 });
-                    }
-                } catch (err) {
-                    console.warn('[idle-seal 改機] replacePet 強化拉滿補丁出錯，改走原始資料', err);
-                }
-                return origReplacePet.call(this, e);
-            };
-        }
-
         // 裝備強化(精煉)：開關開啟時完全跳過原始有風險的邏輯
         // (會消耗材料、有機率失敗、甚至弄碎裝備)，直接設成滿等 12
         if (typeof proto.refineStack === 'function') {
@@ -435,7 +419,6 @@
         `;
 
         const header = document.createElement('div');
-        header.textContent = '放置希望 改機面板';
         header.style.cssText = `
             padding: 10px 12px; background: #2a221a; border-radius: 8px 8px 0 0;
             cursor: move; font-weight: bold; border-bottom: 1px solid #4a3f33;
@@ -443,7 +426,6 @@
         `;
         const headerTitle = document.createElement('span');
         headerTitle.textContent = '放置希望 改機面板';
-        header.textContent = '';
         header.appendChild(headerTitle);
 
         const collapseBtn = document.createElement('button');
@@ -537,24 +519,6 @@
         toggleRow.appendChild(toggleInput);
         toggleRow.appendChild(toggleLabel);
         body.appendChild(toggleRow);
-
-        const toggleRow2 = document.createElement('div');
-        toggleRow2.style.cssText = 'display:flex; align-items:center; gap:8px; margin-bottom:12px; padding:8px; background:#241d16; border-radius:4px;';
-        const toggleInput2 = document.createElement('input');
-        toggleInput2.type = 'checkbox';
-        toggleInput2.checked = !!toggles.maxPetGrow;
-        toggleInput2.id = 'idle-seal-toggle-grow';
-        const toggleLabel2 = document.createElement('label');
-        toggleLabel2.htmlFor = 'idle-seal-toggle-grow';
-        toggleLabel2.textContent = '寵物強化等級直接拉滿(+9)';
-        toggleLabel2.style.cssText = 'cursor:pointer; flex:1;';
-        toggleInput2.addEventListener('change', () => {
-            toggles.maxPetGrow = toggleInput2.checked;
-            saveToggles(toggles);
-        });
-        toggleRow2.appendChild(toggleInput2);
-        toggleRow2.appendChild(toggleLabel2);
-        body.appendChild(toggleRow2);
 
         const toggleRow3 = document.createElement('div');
         toggleRow3.style.cssText = 'display:flex; align-items:center; gap:8px; margin-bottom:12px; padding:8px; background:#241d16; border-radius:4px;';
@@ -684,6 +648,7 @@
 
         let dragging = false, offX = 0, offY = 0;
         header.addEventListener('mousedown', (e) => {
+            if (e.target === collapseBtn) return;
             dragging = true;
             offX = e.clientX - panel.offsetLeft;
             offY = e.clientY - panel.offsetTop;
