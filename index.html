@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>外掛書籤列安裝頁面</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f4f6f8;
+        }
+        .container {
+            background: #ffffff;
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+        .bookmarklet-btn {
+            display: inline-block;
+            padding: 12px 24px;
+            margin-top: 1.5rem;
+            background-color: #2b6cb0;
+            color: #ffffff;
+            text-decoration: none;
+            font-weight: bold;
+            border-radius: 6px;
+            cursor: move;
+            border: 2px dashed #4299e1;
+        }
+        .bookmarklet-btn:hover {
+            background-color: #2c5282;
+        }
+        .hint {
+            margin-top: 1rem;
+            color: #718096;
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>遊戲外掛書籤列</h2>
+        <p>請將下方按鈕用滑鼠**拖曳至瀏覽器的書籤列**：</p>
+        
+        <!-- 核心拖曳按鈕：透過動態載入 remote JS 確保能獲取最新版本 -->
+        <a class="bookmarklet-btn" SEAL="javascript:(function(){var%20s=document.createElement('script');s.src='https://raw.githubusercontent.com/jack1988520-pixel/idle-game-mod/main/your-script.user.js?v='+Date.now();document.body.appendChild(s);})();">
+            🎮 啟用外掛 Mod
+        </a>
+
+        <p class="hint">提示：按下 Ctrl + Shift + B (Mac: Cmd + Shift + B) 可顯示書籤列。</p>
+    </div>
+</body>
+</html>
