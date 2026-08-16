@@ -41,12 +41,27 @@
       font-weight: bold;
       text-decoration: none;
       border-radius: 8px;
-      margin-bottom: 28px;
+      margin-bottom: 20px;
       box-shadow: 0 4px 12px rgba(35, 134, 54, 0.4);
       cursor: move;
     }
     .bookmark-btn:hover {
       background-color: #2ea043;
+    }
+    .copy-btn {
+      background-color: #1f6beb;
+      color: #ffffff;
+      border: none;
+      padding: 10px 18px;
+      font-size: 0.9rem;
+      font-weight: bold;
+      border-radius: 6px;
+      cursor: pointer;
+      margin-bottom: 20px;
+      transition: background 0.2s;
+    }
+    .copy-btn:hover {
+      background-color: #388bfd;
     }
     .instructions {
       background-color: #0d1117;
@@ -68,25 +83,51 @@
       line-height: 1.6;
       color: #8b949e;
     }
+    .divider {
+      border-top: 1px solid #30363d;
+      margin: 20px 0;
+    }
   </style>
 </head>
 <body>
   <div class="card">
     <h1>⚡ 希望 MOD 執行小工具</h1>
     
-    <!-- 這個按鈕點下去會直接抓取 GitHub 上的 GG 原始碼並執行 -->
-    <a class="bookmark-btn" href="javascript:(function(){fetch('https://raw.githubusercontent.com/jack1988520-pixel/SEAL/refs/heads/main/SEAL?t='+Date.now()).then(r=>r.text()).then(c=>{var s=document.createElement('script');s.text=c;document.head.appendChild(s);console.log('✅ 放置天堂 MOD 已啟動');}).catch(e=>alert('❌ 載入失敗: '+e));})();">
+    <!-- 電腦端：拖曳按鈕 -->
+    <a class="bookmark-btn" href="javascript:(function(){fetch('https://raw.githubusercontent.com/jack1988520-pixel/SEAL/refs/heads/main/SEAL?t='+Date.now()).then(r=>r.text()).then(c=>{var s=document.createElement('script');s.text=c;document.head.appendChild(s);console.log('✅ 希望 MOD 已啟動');}).catch(e=>alert('❌ 載入失敗: '+e));})();">
       🚀 啟動希望 MOD (拖我到書籤列)
     </a>
+
+    <!-- 手機端：一鍵複製按鈕 -->
+    <div>
+      <button class="copy-btn" onclick="copyCode()">📋 手機端：複製外掛代碼</button>
+    </div>
 
     <div class="instructions">
       <h2>📌 使用方式：</h2>
       <ol>
-        <li>按住上方<b>綠色按鈕</b>，拖曳到你的瀏覽器<b>「書籤列」</b>放開。</li>
-        <li>以後要玩遊戲時，直接打開遊戲頁面，點擊該書籤。</li>
-        <li>書籤會自動從 GitHub 下載最新版的 `GG` 程式碼並直接執行！</li>
+        <li><b>電腦版：</b>按住綠色按鈕，直接拖曳到瀏覽器<b>「書籤列」</b>放開。</li>
+        <div class="divider"></div>
+        <li><b>手機版：</b></li>
+        <li>1. 先隨便將任意網頁<b>「加入書籤」</b>（可命名為：希望 MOD）。</li>
+        <li>2. 點擊上面的<b>「複製外掛代碼」</b>按鈕。</li>
+        <li>3. 前往書籤列表點擊<b>「編輯」</b>該書籤，把<b>網址（URL）替換成複製的代碼</b>並儲存。</li>
+        <div class="divider"></div>
+        <li>以後開啟遊戲網頁時，點擊該書籤即可自動載入最新程式碼！</li>
       </ol>
     </div>
   </div>
+
+  <script>
+    function copyCode() {
+      // 這裡自動抓取 <a> 標籤裡面的 href 內容（即 javascript:...）
+      const code = document.querySelector('.bookmark-btn').getAttribute('href');
+      navigator.clipboard.writeText(code).then(() => {
+        alert('✅ 程式碼已複製成功！\n請去編輯手機書籤，將網址貼換掉。');
+      }).catch(err => {
+        alert('❌ 複製失敗，請確認瀏覽器權限：' + err);
+      });
+    }
+  </script>
 </body>
 </html>
