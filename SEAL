@@ -4,6 +4,7 @@
 // @version      2.0
 // @description  懸浮拖曳面板，即時調整金錢/經驗/傷害/移動速度倍率(1~100)。透過自動搜尋 Vue 元件樹找到遊戲 session 物件，直接修補其原型方法實現，不依賴網路攔截。
 // @match        https://idle-seal.pp771007.workers.dev/*
+// @match        https://square-limit-943e.jack1988520.workers.dev/*
 // @run-at       document-idle
 // @grant        GM_setValue
 // @grant        GM_getValue
