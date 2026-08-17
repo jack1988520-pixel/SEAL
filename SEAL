@@ -42,6 +42,25 @@
         try { GM_setValue(TOGGLE_KEY, t); } catch (e) {}
     }
 
+    const ORIG_ATTR_KEY = 'idle_seal_orig_attrs_v1';
+    const CUSTOM_ATTR_KEY = 'idle_seal_custom_attrs_v1';
+
+    function getOrigAttrsBackup() {
+        try { return GM_getValue(ORIG_ATTR_KEY, null); } catch (e) { return null; }
+    }
+    function saveOrigAttrsBackup(a) {
+        try { GM_setValue(ORIG_ATTR_KEY, a); } catch (e) {}
+    }
+    function clearOrigAttrsBackup() {
+        try { GM_setValue(ORIG_ATTR_KEY, null); } catch (e) {}
+    }
+    function loadCustomAttrs() {
+        try { return GM_getValue(CUSTOM_ATTR_KEY, null); } catch (e) { return null; }
+    }
+    function saveCustomAttrs(a) {
+        try { GM_setValue(CUSTOM_ATTR_KEY, a); } catch (e) {}
+    }
+
     let mults = loadMults();
     let toggles = loadToggles();
     let session = null;
@@ -550,6 +569,20 @@
         attrTitle.style.cssText = 'font-weight:bold; margin: 4px 0 8px; color:#e0b060;';
         body.appendChild(attrTitle);
 
+        const attrToggleRow = document.createElement('div');
+        attrToggleRow.style.cssText = 'display:flex; align-items:center; gap:8px; margin-bottom:10px; padding:8px; background:#241d16; border-radius:4px;';
+        const attrToggleInput = document.createElement('input');
+        attrToggleInput.type = 'checkbox';
+        attrToggleInput.id = 'idle-seal-toggle-attrs';
+        attrToggleInput.checked = !!getOrigAttrsBackup();
+        const attrToggleLabel = document.createElement('label');
+        attrToggleLabel.htmlFor = 'idle-seal-toggle-attrs';
+        attrToggleLabel.textContent = '使用修改後素質(關閉=還原原始素質)';
+        attrToggleLabel.style.cssText = 'cursor:pointer; flex:1; font-size:12px;';
+        attrToggleRow.appendChild(attrToggleInput);
+        attrToggleRow.appendChild(attrToggleLabel);
+        body.appendChild(attrToggleRow);
+
         const attrFields = [
             { key: 'str', label: '力量' },
             { key: 'agi', label: '敏捷' },
@@ -561,6 +594,7 @@
         const attrInputs = {};
         const attrGrid = document.createElement('div');
         attrGrid.style.cssText = 'display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-bottom:10px;';
+        const savedCustom = loadCustomAttrs();
         attrFields.forEach(f => {
             const wrap = document.createElement('div');
             const lbl = document.createElement('div');
@@ -570,6 +604,7 @@
             input.type = 'number';
             input.min = '0';
             input.placeholder = '0';
+            input.value = savedCustom ? (savedCustom[f.key] ?? '') : '';
             input.style.cssText = 'width:100%; padding:5px; background:#100d09; border:1px solid #4a3f33; color:#eee; border-radius:4px; box-sizing:border-box;';
             wrap.appendChild(lbl);
             wrap.appendChild(input);
@@ -581,6 +616,72 @@
         const attrStatus = document.createElement('div');
         attrStatus.style.cssText = 'font-size:12px; color:#999; margin-bottom:8px; min-height:16px;';
         body.appendChild(attrStatus);
+
+        function readInputAttrs() {
+            const next = {};
+            attrFields.forEach(f => {
+                next[f.key] = Math.max(0, Math.floor(Number(attrInputs[f.key].value) || 0));
+            });
+            return next;
+        }
+
+        function applyCustomAttrs() {
+            if (!session || !session.player) {
+                attrStatus.textContent = '尚未找到 session，無法套用';
+                return false;
+            }
+            try {
+                if (!getOrigAttrsBackup()) {
+                    saveOrigAttrsBackup(Object.assign({}, session.player.attributes));
+                }
+                const next = readInputAttrs();
+                saveCustomAttrs(next);
+                session.player.attributes = next;
+                if (typeof session.refreshPlayerStats === 'function') {
+                    session.refreshPlayerStats();
+                }
+                attrStatus.textContent = '已套用修改後素質';
+                return true;
+            } catch (e) {
+                attrStatus.textContent = '套用出錯，見 Console';
+                console.warn('[idle-seal 改機] 屬性直接設定出錯', e);
+                return false;
+            }
+        }
+
+        function restoreOrigAttrs() {
+            if (!session || !session.player) {
+                attrStatus.textContent = '尚未找到 session，無法還原';
+                return false;
+            }
+            const backup = getOrigAttrsBackup();
+            if (!backup) {
+                attrStatus.textContent = '沒有備份資料可還原';
+                return false;
+            }
+            try {
+                session.player.attributes = Object.assign({}, backup);
+                if (typeof session.refreshPlayerStats === 'function') {
+                    session.refreshPlayerStats();
+                }
+                attrStatus.textContent = '已還原原始素質';
+                return true;
+            } catch (e) {
+                attrStatus.textContent = '還原出錯，見 Console';
+                console.warn('[idle-seal 改機] 還原原始素質出錯', e);
+                return false;
+            }
+        }
+
+        attrToggleInput.addEventListener('change', () => {
+            if (attrToggleInput.checked) {
+                const ok = applyCustomAttrs();
+                if (!ok) attrToggleInput.checked = false;
+            } else {
+                const ok = restoreOrigAttrs();
+                if (!ok) attrToggleInput.checked = true;
+            }
+        });
 
         const attrRowBtns = document.createElement('div');
         attrRowBtns.style.cssText = 'display:flex; gap:8px; margin-bottom:12px;';
@@ -610,25 +711,8 @@
             border-radius:4px; cursor:pointer; font-size:12px;
         `;
         attrApplyBtn.addEventListener('click', () => {
-            if (!session || !session.player) {
-                attrStatus.textContent = '尚未找到 session，無法套用';
-                return;
-            }
-            try {
-                const next = {};
-                attrFields.forEach(f => {
-                    const v = Math.max(0, Math.floor(Number(attrInputs[f.key].value) || 0));
-                    next[f.key] = v;
-                });
-                session.player.attributes = next;
-                if (typeof session.refreshPlayerStats === 'function') {
-                    session.refreshPlayerStats();
-                }
-                attrStatus.textContent = '已套用';
-            } catch (e) {
-                attrStatus.textContent = '套用出錯，見 Console';
-                console.warn('[idle-seal 改機] 屬性直接設定出錯', e);
-            }
+            const ok = applyCustomAttrs();
+            if (ok) attrToggleInput.checked = true;
         });
 
         attrRowBtns.appendChild(attrLoadBtn);
