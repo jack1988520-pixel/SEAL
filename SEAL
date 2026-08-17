@@ -520,6 +520,11 @@
         toggleRow.appendChild(toggleLabel);
         body.appendChild(toggleRow);
 
+        const toggleWarning = document.createElement('div');
+        toggleWarning.textContent = '⚠ 請勿持續開著此選項，會當掉';
+        toggleWarning.style.cssText = 'font-size:11px; color:#e0a060; margin:-6px 0 12px 4px;';
+        body.appendChild(toggleWarning);
+
         const toggleRow3 = document.createElement('div');
         toggleRow3.style.cssText = 'display:flex; align-items:center; gap:8px; margin-bottom:12px; padding:8px; background:#241d16; border-radius:4px;';
         const toggleInput3 = document.createElement('input');
