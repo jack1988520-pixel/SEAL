@@ -564,7 +564,7 @@
         const attrToggleInput = document.createElement('input');
         attrToggleInput.type = 'checkbox';
         attrToggleInput.id = 'idle-seal-toggle-attrs';
-        attrToggleInput.checked = !!loadCustomAttrs();
+        attrToggleInput.checked = false;
         const attrToggleLabel = document.createElement('label');
         attrToggleLabel.htmlFor = 'idle-seal-toggle-attrs';
         attrToggleLabel.textContent = '使用修改後素質(關閉=能力值歸零)';
@@ -656,11 +656,14 @@
         }
 
         attrToggleInput.addEventListener('change', () => {
+            console.log('[idle-seal 改機] 素質開關切換, checked=', attrToggleInput.checked);
             if (attrToggleInput.checked) {
                 const ok = applyCustomAttrs();
+                console.log('[idle-seal 改機] applyCustomAttrs 結果=', ok);
                 if (!ok) attrToggleInput.checked = false;
             } else {
                 const ok = resetAttrsToZero();
+                console.log('[idle-seal 改機] resetAttrsToZero 結果=', ok);
                 if (!ok) attrToggleInput.checked = true;
             }
         });
