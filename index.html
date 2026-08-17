@@ -3,18 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SEAL 放置希望外掛啟動器</title>
+    <title>SEAL 放置希望外掛安裝器</title>
     <style>
         :root {
-            --bg-color: #0f172a;
-            --card-bg: #1e293b;
-            --text-main: #f8fafc;
+            --bg-main: #0b0f19;
+            --card-bg: #151c2c;
+            --btn-purple: #6366f1;
+            --btn-purple-hover: #4f46e5;
+            --btn-dark: #1e293b;
+            --btn-dark-hover: #334155;
+            --text-main: #ffffff;
             --text-sub: #94a3b8;
-            --primary: #3b82f6;
-            --primary-hover: #2563eb;
-            --success: #10b981;
-            --warning: #f59e0b;
-            --border: #334155;
         }
 
         * {
@@ -25,7 +24,7 @@
         }
 
         body {
-            background-color: var(--bg-color);
+            background-color: var(--bg-main);
             color: var(--text-main);
             display: flex;
             justify-content: center;
@@ -34,230 +33,101 @@
             padding: 20px;
         }
 
-        .launcher-card {
+        .container {
             background-color: var(--card-bg);
-            border: 1px solid var(--border);
-            border-radius: 16px;
             width: 100%;
-            max-width: 420px;
-            padding: 28px;
-            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3);
-        }
-
-        .header {
+            max-width: 380px;
+            padding: 32px 24px;
+            border-radius: 20px;
             text-align: center;
-            margin-bottom: 24px;
+            box-shadow: 0 12px 32px rgba(0, 0, 0, 0.4);
         }
 
-        .header h1 {
-            font-size: 1.8rem;
-            letter-spacing: 2px;
-            color: #60a5fa;
-            margin-bottom: 4px;
-        }
-
-        .header p {
-            color: var(--text-sub);
-            font-size: 0.95rem;
-        }
-
-        .status-box {
-            background-color: rgba(15, 23, 42, 0.6);
-            border-radius: 8px;
-            padding: 16px;
-            margin-bottom: 24px;
-            border: 1px solid var(--border);
-        }
-
-        .status-item {
+        .icon-box {
+            width: 64px;
+            height: 64px;
+            background: linear-gradient(135deg, #6366f1, #8b5cf6);
+            border-radius: 16px;
             display: flex;
-            justify-content: space-between;
-            font-size: 0.9rem;
-            margin-bottom: 8px;
-        }
-
-        .status-item:last-child {
-            margin-bottom: 0;
-        }
-
-        .status-item span:first-child {
-            color: var(--text-sub);
-        }
-
-        .badge {
-            padding: 2px 8px;
-            border-radius: 4px;
-            font-size: 0.8rem;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
             font-weight: bold;
+            margin: 0 auto 16px auto;
         }
 
-        .badge-warning { background-color: rgba(245, 158, 11, 0.2); color: var(--warning); }
-        .badge-success { background-color: rgba(16, 185, 129, 0.2); color: var(--success); }
+        h1 { font-size: 22px; margin-bottom: 4px; }
+        .subtitle { font-size: 14px; color: var(--text-sub); margin-bottom: 24px; }
 
         .btn-group {
             display: flex;
             flex-direction: column;
             gap: 12px;
-            margin-bottom: 24px;
         }
 
-        .btn {
+        button {
             width: 100%;
             padding: 14px;
-            border-radius: 8px;
+            border-radius: 12px;
             border: none;
-            font-size: 1rem;
+            font-size: 15px;
             font-weight: 600;
             cursor: pointer;
             transition: all 0.2s ease;
-            text-align: center;
-            text-decoration: none;
-            display: block;
-            box-sizing: border-box;
+            color: var(--text-main);
         }
 
-        .btn-primary { background-color: var(--primary); color: white; }
-        .btn-primary:hover { background-color: var(--primary-hover); }
-        .btn-success { background-color: var(--success); color: white; }
-        .btn-secondary { background-color: transparent; border: 1px solid var(--border); color: var(--text-main); }
-        .btn-secondary:hover { background-color: rgba(255, 255, 255, 0.05); }
+        .btn-purple { background-color: var(--btn-purple); }
+        .btn-purple:hover { background-color: var(--btn-purple-hover); }
 
-        .divider {
-            height: 1px;
-            background-color: var(--border);
-            margin: 20px 0;
-        }
-
-        .guide-section h3 {
-            font-size: 0.9rem;
-            color: var(--text-sub);
-            margin-bottom: 8px;
-            text-transform: uppercase;
-        }
-
-        .guide-steps {
-            font-size: 0.85rem;
-            color: var(--text-sub);
-            padding-left: 20px;
-            line-height: 1.6;
-        }
-
-        /* 狀態展現控制 */
-        .state-panel { display: none; }
-        .state-panel.active { display: block; }
+        .btn-dark { background-color: var(--btn-dark); }
+        .btn-dark:hover { background-color: var(--btn-dark-hover); }
     </style>
 </head>
 <body>
 
-<div class="launcher-card">
-    <div class="header">
-        <h1>SEAL</h1>
-        <p>放置希望外掛啟動器</p>
-    </div>
+<div class="container">
+    <div class="icon-box">S</div>
+    <h1>SEAL</h1>
+    <p class="subtitle">放置希望外掛安裝器</p>
 
-    <!-- 狀態顯示面板 -->
-    <div class="status-box">
-        <div class="status-item">
-            <span>外掛版本</span>
-            <span>v2.0</span>
-        </div>
-        <div class="status-item">
-            <span>目標遊戲</span>
-            <span>放置希望</span>
-        </div>
-        <div class="status-item">
-            <span>偵測狀態</span>
-            <span id="status-badge" class="badge badge-warning">檢查中...</span>
-        </div>
-    </div>
-
-    <!-- 狀態 1：未安裝 / 第一次安裝 -->
-    <div id="state-not-installed" class="state-panel active">
-        <div class="btn-group">
-            <a href="seal-script.user.js" class="btn btn-primary" target="_blank">1. 安裝 SEAL 腳本</a>
-            <button onclick="launchGame()" class="btn btn-secondary">直接進入遊戲</button>
-        </div>
-        <div class="divider"></div>
-        <div class="guide-section">
-            <h3>快速安裝說明</h3>
-            <ol class="guide-steps">
-                <li>請先確保瀏覽器已安裝 Tampermonkey / Violentmonkey。</li>
-                <li>點擊上方「安裝 SEAL 腳本」按鈕完成注入。</li>
-                <li>完成後重新整理本頁，即可直接啟動。</li>
-            </ol>
-        </div>
-    </div>
-
-    <!-- 狀態 2：已安裝 ready -->
-    <div id="state-installed" class="state-panel">
-        <div class="btn-group">
-            <button onclick="launchGame()" class="btn btn-success">进入遊戲 (SEAL 已就緒)</button>
-            <button onclick="checkInstallation()" class="btn btn-secondary">重新檢測狀態</button>
-        </div>
-    </div>
-
-    <!-- 狀態 3：檢測失敗 / 異常 -->
-    <div id="state-error" class="state-panel">
-        <div class="btn-group">
-            <a href="seal-script.user.js" class="btn btn-primary" target="_blank">重新安裝腳本</a>
-            <button onclick="launchGame()" class="btn btn-secondary">無視警告，直接進入遊戲</button>
-        </div>
+    <div class="btn-group">
+        <!-- 核心按鈕觸發區 -->
+        <button onclick="installScript()" class="btn-purple">安裝 SEAL 外掛</button>
+        <button onclick="enterGame()" class="btn-dark">直接進入遊戲</button>
     </div>
 </div>
 
 <script>
-    const GAME_URL = 'https://idle-seal.pp771007.workers.dev';
-    let isInstalled = false;
+  // 請修改為你自己的 loader.js 或 GitHub 網址
+  const GITHUB_LOADER_URL = "https://your-github-username.github.io/loader.js";
+  
+  // 請修改為遊戲目標網址或你的 Cloudflare Worker 代理網址
+  const GAME_URL = "https://idle-seal.pp771007.workers.dev";
 
-    // 監聽 Userscript 發送的自訂心跳/宣告事件
-    window.addEventListener('SEAL_PING_RESPONSE', function(e) {
-        if (e.detail && e.detail.version) {
-            setInstalledState(true);
-        }
-    });
-
-    function checkInstallation() {
-        const badge = document.getElementById('status-badge');
-        badge.className = 'badge badge-warning';
-        badge.innerText = '檢查中...';
-
-        // 觸發自訂廣播事件，向 Userscript 發送 Ping 請求
-        window.dispatchEvent(new CustomEvent('SEAL_PING_REQUEST'));
-
-        // 檢查預期視窗標記（相容性）
-        setTimeout(() => {
-            if (window.__SEAL_INSTALLED) {
-                setInstalledState(true);
-            } else if (!isInstalled) {
-                setInstalledState(false);
-            }
-        }, 500);
+  // 1. 安裝按鈕：自動判斷裝置並處理
+  function installScript() {
+    const isMobile = /Android|iPhone|iPad/i.test(navigator.userAgent);
+    if (isMobile) {
+      // 手機端：生成 Bookmarklet 程式碼並複製至剪貼簿
+      const bookmarklet = `javascript:(function(){var s=document.createElement('script');s.src='${GITHUB_LOADER_URL}?v=${Date.now()}';document.body.appendChild(s);})();`;
+      
+      navigator.clipboard.writeText(bookmarklet).then(() => {
+        alert("【啟動碼已複製】\n1. 請將當前頁面加入手機瀏覽器「書籤」。\n2. 編輯該書籤，把網址替換為剛剛複製的內容。\n3. 進入遊戲頁後點擊該書籤即可啟動外掛！");
+      }).catch(() => {
+        alert("複製失敗，請手動複製書籤語法。");
+      });
+    } else {
+      // 電腦端：觸發 .user.js 檔案下載/安裝
+      window.location.href = "seal.user.js";
     }
+  }
 
-    function setInstalledState(status) {
-        isInstalled = status;
-        const badge = document.getElementById('status-badge');
-        
-        // 隱藏所有狀態頁
-        document.querySelectorAll('.state-panel').forEach(el => el.classList.remove('active'));
-
-        if (status) {
-            badge.className = 'badge badge-success';
-            badge.innerText = '已準備完成';
-            document.getElementById('state-installed').classList.add('active');
-        } else {
-            badge.className = 'badge badge-warning';
-            badge.innerText = '尚未偵測到外掛';
-            document.getElementById('state-not-installed').classList.add('active');
-        }
-    }
-
-    function launchGame() {
-        window.location.href = GAME_URL;
-    }
-
-    // 頁面載入後自動觸發一次檢測
-    document.addEventListener('DOMContentLoaded', checkInstallation);
+  // 2. 進入遊戲按鈕：跳轉至遊戲網址
+  function enterGame() {
+    window.location.href = GAME_URL;
+  }
 </script>
+
 </body>
 </html>
