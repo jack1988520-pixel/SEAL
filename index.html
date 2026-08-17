@@ -3,185 +3,63 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>⚡ 希望 MOD 遊戲入口Portal</title>
+  <title>希望 MOD 書籤執行器</title>
   <style>
-    :root {
-      --bg-color: #0d1117;
-      --card-bg: #161b22;
-      --border-color: #30363d;
-      --primary-green: #238636;
-      --primary-blue: #1f6beb;
-      --text-main: #c9d1d9;
-    }
-
-    * { box-sizing: border-box; }
-
-    body, html {
-      margin: 0;
-      padding: 0;
-      width: 100%;
-      height: 100%;
-      background-color: var(--bg-color);
-      color: var(--text-main);
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-      overflow: hidden;
-      display: flex;
-      flex-direction: column;
-    }
-
-    /* 上方控制面板 Header */
-    header {
-      background-color: var(--card-bg);
-      border-bottom: 1px solid var(--border-color);
-      padding: 10px 16px;
-      display: flex;
-      flex-wrap: wrap;
-      align-items: center;
-      justify-content: space-between;
-      gap: 10px;
-      z-index: 100;
-    }
-
-    .brand {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      font-weight: bold;
-      color: #f0f6fc;
-      font-size: 1rem;
-    }
-
-    .controls {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      flex-wrap: wrap;
-    }
-
-    .btn {
-      border: none;
-      color: #ffffff;
-      padding: 8px 16px;
-      font-size: 0.85rem;
-      font-weight: bold;
-      border-radius: 6px;
-      cursor: pointer;
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      transition: background 0.2s;
-    }
-
-    .btn-inject {
-      background-color: var(--primary-green);
-      box-shadow: 0 0 10px rgba(35, 134, 54, 0.4);
-    }
-    .btn-inject:hover { background-color: #2ea043; }
-
-    .btn-reload {
-      background-color: #30363d;
-      color: #c9d1d9;
-    }
-    .btn-reload:hover { background-color: #8b949e33; }
-
-    /* 核心遊戲區域 Iframe */
-    main {
-      flex: 1;
-      width: 100%;
-      height: 100%;
-      position: relative;
-      background-color: #000;
-    }
-
-    iframe {
-      width: 100%;
-      height: 100%;
-      border: none;
-      display: block;
-    }
-
-    /* 橫幅狀態提示 */
-    #status-toast {
-      position: fixed;
-      bottom: 20px;
-      right: 20px;
-      background: rgba(22, 27, 34, 0.95);
-      border: 1px solid var(--border-color);
-      padding: 12px 20px;
-      border-radius: 8px;
-      font-size: 0.85rem;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.5);
-      display: none;
-      z-index: 1000;
-      color: #58a6ff;
-    }
+    body { font-family: -apple-system, sans-serif; background-color: #0d1117; color: #c9d1d9; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; padding: 20px; box-sizing: border-box; }
+    .card { background-color: #161b22; border: 1px solid #30363d; border-radius: 12px; padding: 32px; max-width: 500px; width: 100%; box-shadow: 0 8px 24px rgba(0,0,0,0.5); text-align: center; }
+    h1 { color: #f0f6fc; font-size: 1.25rem; margin-bottom: 24px; }
+    .bookmark-btn { display: inline-block; background-color: #238636; color: #ffffff; padding: 14px 24px; font-size: 1rem; font-weight: bold; text-decoration: none; border-radius: 8px; margin-bottom: 20px; box-shadow: 0 4px 12px rgba(35, 134, 54, 0.4); cursor: move; }
+    .copy-btn { background-color: #1f6beb; color: #ffffff; border: none; padding: 10px 18px; font-size: 0.9rem; font-weight: bold; border-radius: 6px; cursor: pointer; margin-bottom: 20px; }
+    .instructions { background-color: #0d1117; border: 1px dashed #30363d; border-radius: 8px; padding: 20px; text-align: left; }
+    .instructions h2 { font-size: 0.95rem; color: #58a6ff; margin-top: 0; margin-bottom: 8px; }
+    .instructions ol, .instructions ul { margin: 0; padding-left: 20px; font-size: 0.85rem; line-height: 1.6; color: #8b949e; }
+    .divider { border-top: 1px solid #30363d; margin: 15px 0; }
+    .badge { background-color: #388bfd26; color: #58a6ff; padding: 2px 6px; border-radius: 4px; font-size: 0.8rem; font-weight: bold; }
   </style>
 </head>
 <body>
+  <div class="card">
+    <h1>⚡ 希望 MOD 執行小工具</h1>
+    
+    <a class="bookmark-btn" href="javascript:import('https://jack1988520-pixel.github.io/SEAL/loader.js')">
+      🚀 啟動希望 MOD (拖我到書籤列)
+    </a>
 
-  <header>
-    <div class="brand">
-      <span>⚡ 希望 MOD 入口</span>
+    <div>
+      <button class="copy-btn" onclick="copyCode()">📋 手機端：複製外掛代碼</button>
     </div>
 
-    <div class="controls">
-      <button class="btn btn-reload" onclick="reloadGame()">🔄 重整理遊戲</button>
+    <div class="instructions">
+      <h2>📌 手機端安裝 SOP：</h2>
+      <ol>
+        <li>先將任意網頁加入書籤，名稱取為：<b>希望 MOD</b>。</li>
+        <li>點擊上方<b>「複製外掛代碼」</b>，去編輯該書籤將網址替換掉。</li>
+      </ol>
+
+      <div class="divider"></div>
+
+      <h2>🎮 啟動方式（依手機系統）：</h2>
       
-      <button class="btn btn-inject" onclick="injectMod()">🚀 注入外掛 (MOD)</button>
+      <p style="font-size: 0.85rem; font-weight: bold; color: #f0f6fc; margin: 8px 0 4px 0;">🤖 Android (Chrome)：</p>
+      <ul>
+        <li>進遊戲頁面 ➔ 點擊頂部<b>網址列</b> ➔ 輸入 <b>希望</b> ➔ 點選下方帶有 <b style="color: #f1e05a;">⭐</b> 圖示的書籤。</li>
+      </ul>
+
+      <p style="font-size: 0.85rem; font-weight: bold; color: #f0f6fc; margin: 12px 0 4px 0;">🍎 iOS (iPhone / Safari / Chrome)：</p>
+      <ul>
+        <li>進遊戲頁面 ➔ 開啟<b>書籤列表</b> ➔ 直接點擊 <b>希望 MOD</b> 即可啟動。</li>
+      </ul>
     </div>
-  </header>
-
-  <main>
-    <iframe id="game-frame" src="https://l.pp71007.workers.dev" allow="autoplay"></iframe>
-  </main>
-
-  <div id="status-toast"></div>
+  </div>
 
   <script>
-    // 注入外掛邏輯
-    function injectMod() {
-      showToast('⏳ 正在跨域注入希望 MOD Engine...');
-
-      try {
-        const frame = document.getElementById('game-frame');
-        const frameWindow = frame.contentWindow;
-        const frameDocument = frame.contentDocument || frameWindow.document;
-
-        // 從 GitHub 動態獲取並載入最新版的 loader.js
-        fetch('https://raw.githubusercontent.com/jack1988520-pixel/SEAL/refs/heads/main/SEAL?t=' + Date.now())
-          .then(res => res.text())
-          .then(code => {
-            const script = frameDocument.createElement('script');
-            script.textContent = code;
-            frameDocument.head.appendChild(script);
-            showToast('✅ 希望 MOD 已成功注入遊戲！');
-          })
-          .catch(err => {
-            showToast('❌ 載入腳本失敗: ' + err);
-          });
-
-      } catch (e) {
-        // 若受到 Same-Origin 政策限制（跨網域）的相容備援提示
-        alert('⚠️ 瀏覽器安全防護（CORS）攔截了控制區。\n請使用上方原本的【書籤列注入法】。');
-        showToast('❌ 跨網域安全限制阻擋注入');
-      }
-    }
-
-    // 重新整理遊戲
-    function reloadGame() {
-      const frame = document.getElementById('game-frame');
-      frame.src = frame.src;
-      showToast('🔄 遊戲已重新載入');
-    }
-
-    // Toast 訊息提示元件
-    function showToast(msg) {
-      const toast = document.getElementById('status-toast');
-      toast.innerText = msg;
-      toast.style.display = 'block';
-      setTimeout(() => {
-        toast.style.display = 'none';
-      }, 4000);
+    function copyCode() {
+      const code = document.querySelector('.bookmark-btn').getAttribute('href');
+      navigator.clipboard.writeText(code).then(() => {
+        alert('✅ 代碼已複製！\n請去編輯書籤，將網址替換掉。');
+      }).catch(err => {
+        alert('❌ 複製失敗: ' + err);
+      });
     }
   </script>
 </body>
