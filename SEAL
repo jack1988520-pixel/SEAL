@@ -42,18 +42,8 @@
         try { GM_setValue(TOGGLE_KEY, t); } catch (e) {}
     }
 
-    const ORIG_ATTR_KEY = 'idle_seal_orig_attrs_v1';
     const CUSTOM_ATTR_KEY = 'idle_seal_custom_attrs_v1';
 
-    function getOrigAttrsBackup() {
-        try { return GM_getValue(ORIG_ATTR_KEY, null); } catch (e) { return null; }
-    }
-    function saveOrigAttrsBackup(a) {
-        try { GM_setValue(ORIG_ATTR_KEY, a); } catch (e) {}
-    }
-    function clearOrigAttrsBackup() {
-        try { GM_setValue(ORIG_ATTR_KEY, null); } catch (e) {}
-    }
     function loadCustomAttrs() {
         try { return GM_getValue(CUSTOM_ATTR_KEY, null); } catch (e) { return null; }
     }
@@ -574,10 +564,10 @@
         const attrToggleInput = document.createElement('input');
         attrToggleInput.type = 'checkbox';
         attrToggleInput.id = 'idle-seal-toggle-attrs';
-        attrToggleInput.checked = !!getOrigAttrsBackup();
+        attrToggleInput.checked = !!loadCustomAttrs();
         const attrToggleLabel = document.createElement('label');
         attrToggleLabel.htmlFor = 'idle-seal-toggle-attrs';
-        attrToggleLabel.textContent = '使用修改後素質(關閉=還原原始素質)';
+        attrToggleLabel.textContent = '使用修改後素質(關閉=能力值歸零)';
         attrToggleLabel.style.cssText = 'cursor:pointer; flex:1; font-size:12px;';
         attrToggleRow.appendChild(attrToggleInput);
         attrToggleRow.appendChild(attrToggleLabel);
@@ -631,9 +621,6 @@
                 return false;
             }
             try {
-                if (!getOrigAttrsBackup()) {
-                    saveOrigAttrsBackup(Object.assign({}, session.player.attributes));
-                }
                 const next = readInputAttrs();
                 saveCustomAttrs(next);
                 session.player.attributes = next;
@@ -649,26 +636,21 @@
             }
         }
 
-        function restoreOrigAttrs() {
+        function resetAttrsToZero() {
             if (!session || !session.player) {
-                attrStatus.textContent = '尚未找到 session，無法還原';
-                return false;
-            }
-            const backup = getOrigAttrsBackup();
-            if (!backup) {
-                attrStatus.textContent = '沒有備份資料可還原';
+                attrStatus.textContent = '尚未找到 session，無法歸零';
                 return false;
             }
             try {
-                session.player.attributes = Object.assign({}, backup);
+                session.player.attributes = { str: 0, agi: 0, int: 0, sta: 0, wis: 0, luck: 0 };
                 if (typeof session.refreshPlayerStats === 'function') {
                     session.refreshPlayerStats();
                 }
-                attrStatus.textContent = '已還原原始素質';
+                attrStatus.textContent = '已將能力值歸零，點數已還原';
                 return true;
             } catch (e) {
-                attrStatus.textContent = '還原出錯，見 Console';
-                console.warn('[idle-seal 改機] 還原原始素質出錯', e);
+                attrStatus.textContent = '歸零出錯，見 Console';
+                console.warn('[idle-seal 改機] 能力值歸零出錯', e);
                 return false;
             }
         }
@@ -678,7 +660,7 @@
                 const ok = applyCustomAttrs();
                 if (!ok) attrToggleInput.checked = false;
             } else {
-                const ok = restoreOrigAttrs();
+                const ok = resetAttrsToZero();
                 if (!ok) attrToggleInput.checked = true;
             }
         });
