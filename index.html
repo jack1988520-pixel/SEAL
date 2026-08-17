@@ -1,133 +1,641 @@
 <!DOCTYPE html>
-<html lang="zh-TW">
+<html lang="zh-Hant">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SEAL 放置希望外掛安裝器</title>
-    <style>
-        :root {
-            --bg-main: #0b0f19;
-            --card-bg: #151c2c;
-            --btn-purple: #6366f1;
-            --btn-purple-hover: #4f46e5;
-            --btn-dark: #1e293b;
-            --btn-dark-hover: #334155;
-            --text-main: #ffffff;
-            --text-sub: #94a3b8;
-        }
+  <meta charset="UTF-8">
 
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-        }
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 
-        body {
-            background-color: var(--bg-main);
-            color: var(--text-main);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            padding: 20px;
-        }
+  <meta
+    name="theme-color"
+    content="#0b1020">
 
-        .container {
-            background-color: var(--card-bg);
-            width: 100%;
-            max-width: 380px;
-            padding: 32px 24px;
-            border-radius: 20px;
-            text-align: center;
-            box-shadow: 0 12px 32px rgba(0, 0, 0, 0.4);
-        }
+  <title>SEAL｜放置希望外掛安裝器</title>
 
-        .icon-box {
-            width: 64px;
-            height: 64px;
-            background: linear-gradient(135deg, #6366f1, #8b5cf6);
-            border-radius: 16px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 28px;
-            font-weight: bold;
-            margin: 0 auto 16px auto;
-        }
+  <style>
+    :root {
+      --bg: #070b16;
+      --card: #101827;
+      --card2: #141f32;
+      --line: #26344f;
+      --text: #f8fafc;
+      --muted: #94a3b8;
+      --blue: #4f8cff;
+      --purple: #7c5cff;
+      --green: #22c55e;
+      --yellow: #f59e0b;
+      --red: #ef4444;
+    }
 
-        h1 { font-size: 22px; margin-bottom: 4px; }
-        .subtitle { font-size: 14px; color: var(--text-sub); margin-bottom: 24px; }
+    * {
+      box-sizing: border-box;
+    }
 
-        .btn-group {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-        }
+    html,
+    body {
+      margin: 0;
+      padding: 0;
+      min-height: 100%;
+    }
 
-        button {
-            width: 100%;
-            padding: 14px;
-            border-radius: 12px;
-            border: none;
-            font-size: 15px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            color: var(--text-main);
-        }
+    body {
+      min-height: 100vh;
+      padding:
+        max(18px, env(safe-area-inset-top))
+        16px
+        max(24px, env(safe-area-inset-bottom));
 
-        .btn-purple { background-color: var(--btn-purple); }
-        .btn-purple:hover { background-color: var(--btn-purple-hover); }
+      background:
+        radial-gradient(
+          circle at 50% -10%,
+          rgba(79, 140, 255, 0.22),
+          transparent 34%
+        ),
+        radial-gradient(
+          circle at 100% 35%,
+          rgba(124, 92, 255, 0.16),
+          transparent 30%
+        ),
+        var(--bg);
 
-        .btn-dark { background-color: var(--btn-dark); }
-        .btn-dark:hover { background-color: var(--btn-dark-hover); }
-    </style>
+      color: var(--text);
+
+      font-family:
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        "Noto Sans TC",
+        "Microsoft JhengHei",
+        sans-serif;
+    }
+
+    .page {
+      width: 100%;
+      max-width: 640px;
+      margin: 0 auto;
+    }
+
+    .header {
+      text-align: center;
+      padding: 24px 0 14px;
+    }
+
+    .logo {
+      width: 76px;
+      height: 76px;
+      margin: 0 auto 16px;
+
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      border-radius: 22px;
+
+      background:
+        linear-gradient(
+          135deg,
+          var(--blue),
+          var(--purple)
+        );
+
+      box-shadow:
+        0 18px 55px rgba(79, 140, 255, 0.3);
+
+      font-size: 36px;
+      font-weight: 900;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: 30px;
+      line-height: 1.1;
+    }
+
+    .subtitle {
+      margin-top: 8px;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .environment {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+
+      margin-top: 16px;
+      padding: 8px 13px;
+
+      border-radius: 999px;
+
+      background: rgba(79, 140, 255, 0.08);
+      border: 1px solid rgba(79, 140, 255, 0.18);
+
+      color: #c7d7ff;
+      font-size: 13px;
+    }
+
+    .environment-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--green);
+    }
+
+    .card {
+      margin-top: 16px;
+      padding: 18px;
+
+      border-radius: 18px;
+
+      background:
+        linear-gradient(
+          180deg,
+          rgba(20, 31, 50, 0.98),
+          rgba(16, 24, 39, 0.98)
+        );
+
+      border: 1px solid var(--line);
+
+      box-shadow:
+        0 18px 60px rgba(0, 0, 0, 0.25);
+    }
+
+    .game-name {
+      font-size: 17px;
+      font-weight: 800;
+    }
+
+    .game-url {
+      margin-top: 6px;
+
+      color: #64748b;
+      font-size: 12px;
+      line-height: 1.5;
+
+      word-break: break-all;
+    }
+
+    .status {
+      margin-top: 15px;
+      padding: 13px 14px;
+
+      border-radius: 12px;
+
+      background: #0b1220;
+      border: 1px solid var(--line);
+
+      font-size: 13px;
+      line-height: 1.6;
+    }
+
+    .status.ok {
+      color: #86efac;
+    }
+
+    .status.warn {
+      color: #fbbf24;
+    }
+
+    .status.info {
+      color: #bfdbfe;
+    }
+
+    .steps {
+      margin-top: 14px;
+    }
+
+    .step {
+      display: flex;
+      gap: 12px;
+
+      padding: 14px 0;
+
+      border-bottom:
+        1px solid rgba(148, 163, 184, 0.08);
+    }
+
+    .step:last-child {
+      border-bottom: 0;
+    }
+
+    .step-no {
+      width: 30px;
+      height: 30px;
+
+      flex: 0 0 30px;
+
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      border-radius: 10px;
+
+      background: rgba(79, 140, 255, 0.12);
+
+      color: #a8c4ff;
+
+      font-size: 13px;
+      font-weight: 800;
+    }
+
+    .step-body {
+      flex: 1;
+    }
+
+    .step-title {
+      font-size: 14px;
+      font-weight: 800;
+    }
+
+    .step-text {
+      margin-top: 4px;
+
+      color: var(--muted);
+
+      font-size: 12px;
+      line-height: 1.65;
+    }
+
+    .buttons {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+
+      margin-top: 18px;
+    }
+
+    .button {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      width: 100%;
+      min-height: 48px;
+
+      padding: 13px 16px;
+
+      border-radius: 13px;
+      border: 0;
+
+      font-size: 14px;
+      font-weight: 800;
+
+      text-decoration: none;
+
+      cursor: pointer;
+
+      transition:
+        transform 0.12s ease,
+        opacity 0.12s ease;
+    }
+
+    .button:active {
+      transform: scale(0.985);
+    }
+
+    .primary {
+      color: white;
+
+      background:
+        linear-gradient(
+          135deg,
+          var(--blue),
+          var(--purple)
+        );
+    }
+
+    .secondary {
+      color: #e5e7eb;
+
+      background: #1b263b;
+
+      border: 1px solid #2a3a58;
+    }
+
+    .outline {
+      color: #aab8ca;
+
+      background: transparent;
+
+      border: 1px solid #2a3a58;
+    }
+
+    .panel {
+      margin-top: 14px;
+      padding: 14px;
+
+      border-radius: 12px;
+
+      font-size: 12px;
+      line-height: 1.7;
+    }
+
+    .panel.warning {
+      background: rgba(245, 158, 11, 0.08);
+      border: 1px solid rgba(245, 158, 11, 0.18);
+      color: #fbbf24;
+    }
+
+    .panel.success {
+      background: rgba(34, 197, 94, 0.08);
+      border: 1px solid rgba(34, 197, 94, 0.18);
+      color: #86efac;
+    }
+
+    .manual {
+      margin-top: 14px;
+    }
+
+    .manual h2 {
+      margin: 0;
+      font-size: 14px;
+    }
+
+    .manual ol {
+      margin: 10px 0 0;
+      padding-left: 20px;
+
+      color: var(--muted);
+
+      font-size: 12px;
+      line-height: 1.8;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    .footer {
+      padding: 20px 0;
+
+      text-align: center;
+
+      color: #475569;
+
+      font-size: 11px;
+      line-height: 1.6;
+    }
+
+    @media (min-width: 700px) {
+      body {
+        padding-top: 48px;
+      }
+
+      .card {
+        padding: 22px;
+      }
+    }
+  </style>
 </head>
+
 <body>
 
-<div class="container">
-    <div class="icon-box">S</div>
-    <h1>SEAL</h1>
-    <p class="subtitle">放置希望外掛安裝器</p>
+<div class="page">
 
-    <div class="btn-group">
-        <!-- 核心按鈕觸發區 -->
-        <button onclick="installScript()" class="btn-purple">安裝 SEAL 外掛</button>
-        <button onclick="enterGame()" class="btn-dark">直接進入遊戲</button>
+  <header class="header">
+
+    <div class="logo">S</div>
+
+    <h1>SEAL</h1>
+
+    <div class="subtitle">
+      放置希望外掛安裝器
     </div>
+
+    <div class="environment">
+
+      <span class="environment-dot"></span>
+
+      <span id="environmentText">
+        正在辨識裝置與瀏覽器…
+      </span>
+
+    </div>
+
+  </header>
+
+
+  <section class="card">
+
+    <div class="game-name">
+      目標遊戲：放置希望
+    </div>
+
+    <div class="game-url">
+      https://idle-seal.pp771007.workers.dev
+    </div>
+
+
+    <div
+      id="status"
+      class="status info">
+
+      正在判斷適合的 SEAL 安裝流程…
+
+    </div>
+
+
+    <div
+      id="steps"
+      class="steps">
+    </div>
+
+
+    <div class="buttons">
+
+      <a
+        id="managerButton"
+        class="button primary"
+        href="https://www.tampermonkey.net/"
+        target="_blank"
+        rel="noopener noreferrer">
+
+        安裝使用者腳本管理器
+
+      </a>
+
+
+      <a
+        id="sealButton"
+        class="button secondary"
+        href="https://raw.githubusercontent.com/jack1988520-pixel/SEAL/main/SEAL"
+        target="_blank"
+        rel="noopener noreferrer">
+
+        安裝 SEAL 外掛
+
+      </a>
+
+
+      <a
+        class="button secondary"
+        href="https://idle-seal.pp771007.workers.dev"
+        target="_blank"
+        rel="noopener noreferrer">
+
+        進入放置希望
+
+      </a>
+
+
+      <button
+        id="manualButton"
+        class="button outline"
+        type="button">
+
+        查看完整安裝說明
+
+      </button>
+
+    </div>
+
+
+    <div
+      id="notice"
+      class="panel warning hidden">
+    </div>
+
+
+    <div
+      id="success"
+      class="panel success hidden">
+    </div>
+
+  </section>
+
+
+  <section
+    id="manual"
+    class="card manual hidden">
+
+    <h2>
+      完整安裝流程
+    </h2>
+
+    <ol id="manualList"></ol>
+
+  </section>
+
+
+  <div class="footer">
+    SEAL Web Installer<br>
+    外掛目標限定為指定遊戲網址
+  </div>
+
 </div>
 
+
 <script>
-  // 請修改為你自己的 loader.js 或 GitHub 網址
-  const GITHUB_LOADER_URL = "https://your-github-username.github.io/loader.js";
-  
-  // 請修改為遊戲目標網址或你的 Cloudflare Worker 代理網址
-  const GAME_URL = "https://idle-seal.pp771007.workers.dev";
 
-  // 1. 安裝按鈕：自動判斷裝置並處理
-  function installScript() {
-    const isMobile = /Android|iPhone|iPad/i.test(navigator.userAgent);
-    if (isMobile) {
-      // 手機端：生成 Bookmarklet 程式碼並複製至剪貼簿
-      const bookmarklet = `javascript:(function(){var s=document.createElement('script');s.src='${GITHUB_LOADER_URL}?v=${Date.now()}';document.body.appendChild(s);})();`;
-      
-      navigator.clipboard.writeText(bookmarklet).then(() => {
-        alert("【啟動碼已複製】\n1. 請將當前頁面加入手機瀏覽器「書籤」。\n2. 編輯該書籤，把網址替換為剛剛複製的內容。\n3. 進入遊戲頁後點擊該書籤即可啟動外掛！");
-      }).catch(() => {
-        alert("複製失敗，請手動複製書籤語法。");
-      });
-    } else {
-      // 電腦端：觸發 .user.js 檔案下載/安裝
-      window.location.href = "seal.user.js";
-    }
-  }
+const GAME_URL =
+  "https://idle-seal.pp771007.workers.dev";
 
-  // 2. 進入遊戲按鈕：跳轉至遊戲網址
-  function enterGame() {
-    window.location.href = GAME_URL;
-  }
-</script>
+const SEAL_URL =
+  "https://raw.githubusercontent.com/jack1988520-pixel/SEAL/main/SEAL";
 
-</body>
-</html>
+const TAMPERMONKEY_URL =
+  "https://www.tampermonkey.net/";
+
+const FIREFOX_TAMPERMONKEY_URL =
+  "https://www.tampermonkey.net/index.php?browser=firefox";
+
+const EDGE_TAMPERMONKEY_URL =
+  "https://www.tampermonkey.net/index.php?browser=edge";
+
+const SAFARI_TAMPERMONKEY_URL =
+  "https://www.tampermonkey.net/index.php?browser=safari";
+
+
+const environmentText =
+  document.getElementById("environmentText");
+
+const status =
+  document.getElementById("status");
+
+const steps =
+  document.getElementById("steps");
+
+const managerButton =
+  document.getElementById("managerButton");
+
+const sealButton =
+  document.getElementById("sealButton");
+
+const notice =
+  document.getElementById("notice");
+
+const success =
+  document.getElementById("success");
+
+const manual =
+  document.getElementById("manual");
+
+const manualButton =
+  document.getElementById("manualButton");
+
+const manualList =
+  document.getElementById("manualList");
+
+
+sealButton.href = SEAL_URL;
+
+
+function detectEnvironment() {
+
+  const ua =
+    navigator.userAgent.toLowerCase();
+
+  const platform =
+    (navigator.platform || "").toLowerCase();
+
+  const touchPoints =
+    navigator.maxTouchPoints || 0;
+
+
+  const ios =
+    /iphone|ipad|ipod/.test(ua) ||
+    (
+      platform.includes("mac") &&
+      touchPoints > 1
+    );
+
+
+  const android =
+    /android/.test(ua);
+
+
+  const windows =
+    /windows/.test(ua);
+
+
+  const mac =
+    /macintosh|mac os x/.test(ua) &&
+    !ios;
+
+
+  const linux =
+    /linux/.test(ua) &&
+    !android;
+
+
+  let browser =
+    "未知瀏覽器";
+
+
+  if (/edg\//.test(ua)) {
+
+    browser = "Microsoft Edge";
+
+  } else if (/firefox\//.test(ua)) {
+
+    browser = "Firefox";
+
+  } else if (
+    /crios\//.test(ua) ||
+    /chrome\//.test(ua)
+  ) {
+
+    browser = "Google Chrome";
+
+  } else if (/safari\//.test(ua)) {
