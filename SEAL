@@ -802,11 +802,13 @@
             border-radius:4px; cursor:pointer; font-size:13px;
         `;
         retryBtn.addEventListener('click', () => {
-            patched = false;
-            if (session) {
-                const proto = Object.getPrototypeOf(session);
-                proto.__idleSealPatched = false;
+            // 已經找到且補丁過就不要再重新包一層，避免倍率疊乘;
+            // 只有真的還沒補丁成功時才重新掃描套用
+            if (session && Object.getPrototypeOf(session).__idleSealPatched) {
+                updateStatus('已找到並套用 (session 物件命中，無需重複套用)');
+                return;
             }
+            patched = false;
             tryPatchLoop(5);
         });
         body.appendChild(retryBtn);
