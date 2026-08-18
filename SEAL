@@ -28,7 +28,7 @@
     }
 
     const TOGGLE_KEY = 'idle_seal_toggles_v1';
-    const TOGGLE_DEFAULTS = { skipEvolveMaterials: false, maxRefine: false };
+    const TOGGLE_DEFAULTS = { skipEvolveMaterials: false, maxRefine: false, maxGrow: false };
 
     function loadToggles() {
         try {
@@ -403,6 +403,41 @@
             };
         }
 
+        // 裝備 G 化：失敗會讓裝備直接消失(比精煉更高風險)，開關開啟時
+        // 完全跳過原始風險邏輯，直接寫入成功結果(升到目標裝備、refine歸零)
+        if (typeof proto.growStack === 'function' && typeof proto.growCheck === 'function') {
+            const origGrowStack = proto.growStack;
+            proto.growStack = function (e) {
+                if (!toggles.maxGrow) {
+                    return origGrowStack.call(this, e);
+                }
+                try {
+                    if (!this.inVillage) return;
+                    const t = typeof this.mutableStack === 'function' ? this.mutableStack(e) : this.player.stacks.get(e);
+                    if (!t || !this.data.equipById.get(t.itemId)) return;
+                    const n = this.growCheck(e);
+                    if (n.blocked || !n.book || !n.targetId) return;
+                    const r = this.data.equipById.get(n.targetId);
+                    if (!r) return;
+                    const i = typeof this.splitOne === 'function' ? this.splitOne(t) : t;
+                    const name = typeof this.itemName === 'function' ? this.itemName(t.itemId) : '裝備';
+                    i.itemId = n.targetId;
+                    i.refine = 0;
+                    i.refineTries = 0;
+                    if (this.player.seenItems && typeof this.player.seenItems.add === 'function') {
+                        this.player.seenItems.add(n.targetId);
+                    }
+                    if (typeof this.push === 'function') this.push(`${name} G 化成功 → ${r.name}`, 'equip');
+                    if (typeof this.cue === 'function') this.cue('success');
+                    if (typeof this.refreshPlayerStats === 'function') this.refreshPlayerStats();
+                    if (typeof this.applyNow === 'function') this.applyNow();
+                } catch (err) {
+                    console.warn('[idle-seal 改機] growStack 補丁出錯，改走原始邏輯', err);
+                    return origGrowStack.call(this, e);
+                }
+            };
+        }
+
         console.log('[idle-seal 改機] 原型方法修補完成', mults, toggles);
     }
 
@@ -572,6 +607,24 @@
         toggleRow3.appendChild(toggleInput3);
         toggleRow3.appendChild(toggleLabel3);
         body.appendChild(toggleRow3);
+
+        const toggleRow4 = document.createElement('div');
+        toggleRow4.style.cssText = 'display:flex; align-items:center; gap:8px; margin-bottom:12px; padding:8px; background:#241d16; border-radius:4px;';
+        const toggleInput4 = document.createElement('input');
+        toggleInput4.type = 'checkbox';
+        toggleInput4.checked = !!toggles.maxGrow;
+        toggleInput4.id = 'idle-seal-toggle-grow2';
+        const toggleLabel4 = document.createElement('label');
+        toggleLabel4.htmlFor = 'idle-seal-toggle-grow2';
+        toggleLabel4.textContent = '裝備 G化必定成功';
+        toggleLabel4.style.cssText = 'cursor:pointer; flex:1;';
+        toggleInput4.addEventListener('change', () => {
+            toggles.maxGrow = toggleInput4.checked;
+            saveToggles(toggles);
+        });
+        toggleRow4.appendChild(toggleInput4);
+        toggleRow4.appendChild(toggleLabel4);
+        body.appendChild(toggleRow4);
 
         // 屬性直接設定：六個輸入框 + 套用按鈕，直接覆蓋 player.attributes，
         // 完全繞開 unspentPoints/allocate() 的點數計算，不會產生負數殘留
