@@ -307,15 +307,27 @@
 
         // 寵物進化按鈕能不能按，是 buildPetView() 算出來的 blocked 欄位
         // 決定的(跟 evolvePet() 內部判斷是分開兩套邏輯)，這裡一併解鎖
+        // 遊戲版本更新後結構從 targets[] 改成 recipes[]，兩種都相容處理
         if (typeof proto.buildPetView === 'function') {
             const origBuildPetView = proto.buildPetView;
             proto.buildPetView = function (...args) {
                 const result = origBuildPetView.apply(this, args);
                 try {
-                    if (toggles.skipEvolveMaterials && result && Array.isArray(result.targets)) {
-                        for (const t of result.targets) {
+                    if (toggles.skipEvolveMaterials && result) {
+                        const unlockEntry = (t) => {
                             t.blocked = false;
                             if (typeof t.need === 'number') t.have = t.need;
+                            if (Array.isArray(t.mats)) {
+                                for (const m of t.mats) {
+                                    if (typeof m.count === 'number') m.count = 999999;
+                                }
+                            }
+                        };
+                        if (Array.isArray(result.targets)) {
+                            for (const t of result.targets) unlockEntry(t);
+                        }
+                        if (Array.isArray(result.recipes)) {
+                            for (const r of result.recipes) unlockEntry(r);
                         }
                     }
                 } catch (e) {
@@ -327,14 +339,23 @@
 
         // 寵物進化：暫時偽裝 countOf()/take()，跳過材料門檻與消耗，
         // 執行完立刻還原，成功/失敗機率仍走遊戲原本邏輯
-        // 材料需求跳過：countOf/take 在開關開啟期間「持續」生效
+        // 材料需求跳過：countOf/usableCount/take 在開關開啟期間「持續」生效
         // (不是呼叫 evolvePet 當下騙一下就還原)，
         // 因為介面的 disabled 判斷是背景持續重新計算的，不是只在點擊當下才算
+        // (遊戲版本更新後 evolvePet/buildPetView 改用 usableCount 而非
+        // countOf 做材料判斷，兩個都補上避免再次因改版而失效)
         if (typeof proto.countOf === 'function') {
             const origCountOf = proto.countOf;
             proto.countOf = function (...args) {
                 if (toggles.skipEvolveMaterials) return Infinity;
                 return origCountOf.apply(this, args);
+            };
+        }
+        if (typeof proto.usableCount === 'function') {
+            const origUsableCount = proto.usableCount;
+            proto.usableCount = function (...args) {
+                if (toggles.skipEvolveMaterials) return Infinity;
+                return origUsableCount.apply(this, args);
             };
         }
         if (typeof proto.take === 'function') {
