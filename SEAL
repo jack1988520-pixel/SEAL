@@ -718,7 +718,7 @@
                 if (typeof session.refreshPlayerStats === 'function') {
                     session.refreshPlayerStats();
                 }
-                attrStatus.textContent = '已套用修改後素質';
+                attrStatus.textContent = '已套用修改後素質(數值已生效，若畫面沒變請切到其他頁籤再切回來)';
                 return true;
             } catch (e) {
                 attrStatus.textContent = '套用出錯，見 Console';
@@ -737,7 +737,7 @@
                 if (typeof session.refreshPlayerStats === 'function') {
                     session.refreshPlayerStats();
                 }
-                attrStatus.textContent = '已將能力值歸零，點數已還原';
+                attrStatus.textContent = '已將能力值歸零，點數已還原(若畫面沒變請切到其他頁籤再切回來)';
                 return true;
             } catch (e) {
                 attrStatus.textContent = '歸零出錯，見 Console';
