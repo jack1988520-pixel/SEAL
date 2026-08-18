@@ -403,6 +403,23 @@
             };
         }
 
+        // growCheck() 是介面顯示「缺融合書」文字/按鈕狀態的依據，
+        // 直接補這裡讓顯示端跟 growStack() 執行端看到同一份解鎖結果
+        if (typeof proto.growCheck === 'function') {
+            const origGrowCheck = proto.growCheck;
+            proto.growCheck = function (...args) {
+                const result = origGrowCheck.apply(this, args);
+                try {
+                    if (toggles.maxGrow && result) {
+                        result.blocked = undefined;
+                    }
+                } catch (e) {
+                    console.warn('[idle-seal 改機] growCheck 解鎖補丁出錯', e);
+                }
+                return result;
+            };
+        }
+
         // 裝備 G 化：失敗會讓裝備直接消失(比精煉更高風險)，開關開啟時
         // 完全跳過原始風險邏輯，直接寫入成功結果(升到目標裝備、refine歸零)
         if (typeof proto.growStack === 'function' && typeof proto.growCheck === 'function') {
@@ -416,7 +433,7 @@
                     const t = typeof this.mutableStack === 'function' ? this.mutableStack(e) : this.player.stacks.get(e);
                     if (!t || !this.data.equipById.get(t.itemId)) return;
                     const n = this.growCheck(e);
-                    if (n.blocked || !n.book || !n.targetId) return;
+                    if (!n.book || !n.targetId) return; // 忽略 n.blocked，只要有目標裝備跟書籍資料就放行
                     const r = this.data.equipById.get(n.targetId);
                     if (!r) return;
                     const i = typeof this.splitOne === 'function' ? this.splitOne(t) : t;
